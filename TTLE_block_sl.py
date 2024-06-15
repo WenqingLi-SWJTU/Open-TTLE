@@ -31,4 +31,4 @@ class ENVIRONMENT:
         # not check constraints if test mode
         self.is_test_mode = config.is_test_mode
 
-        asd asd
+
