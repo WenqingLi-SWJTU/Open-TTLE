@@ -8,33 +8,14 @@ plt.rcParams['font.size']=14
 plt.rcParams['axes.unicode_minus']=False # 用来正常显示负号
 
 
-def draw(distance, num_S, time_slot, time_horizon):
-    ds = distance
-    numS = num_S
-    # font = {'family' : 'Times New Roman', 'size': 14}
-    # if case_id == 1:
-    #     time_horizon = 57
-    #     xcoodi = [0, time_horizon]
-    #     plt.xticks(xcoodi)
-    #     # plt.xlabel('Time (min)', font)
-    #     plt.xlabel('时间(分钟)')
-    # elif case_id == 2:
-    #     time_horizon = 140
-    #     xcoodi = [0, time_horizon]
-    #     plt.xticks(xcoodi)
-    #     # plt.xlabel('Time (min)', font)
-    #     plt.xlabel('时间(分钟)')
-    # else:
-    #     time_horizon = 1440
-    #     xcoodi = list(range(0, time_horizon+60, 60))
-    #     xticks = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
-    #               '23', '24', '1', '2', '3', '4', '5', '6']
-    #     plt.xticks(xcoodi, labels=xticks)
-    #     # plt.xlabel('Time (h)', font)
-    #     plt.xlabel('时间(小时)')
+def draw(time_slot, config):
+    ds = config.distance
+    numS = config.n_stations
+    time_horizon = config.time_zone
+
     xcoodi = [0, time_horizon]
     plt.xticks(xcoodi)
-    plt.xlabel('时间(分钟)')
+    plt.xlabel('time(min)')
     ##    time_horizon = 140
     # print(ds)
     ycoodi = []
@@ -50,9 +31,10 @@ def draw(distance, num_S, time_slot, time_horizon):
     plt.xlim((0, time_horizon))
     plt.ylim((0, maxy))
 
-    yticks = ['RA', 'PQ', 'FY', 'CX', 'LM', 'TK', 'LB', 'PL', 'CC', 'SJX']
+    yticks = np.arange(numS)
     yticks = yticks[::-1]
 
+    # plt.yticks(ycoodi)
     plt.yticks(ycoodi, labels=yticks[-numS:])
     # plt.yticks(ycoodi)
     for i in xcoodi:
@@ -84,3 +66,20 @@ def draw(distance, num_S, time_slot, time_horizon):
     plt.xticks(fontproperties='Times New Roman')
     plt.yticks(fontproperties='Times New Roman')
     plt.show()
+
+
+import pickle
+# import xlrd
+import numpy as np
+
+
+def write_file(file_name, file):
+    file_name = file_name + '.pkl'
+    with open(file_name, 'wb') as fp:
+        pickle.dump(file, fp)
+
+
+def read_file(file_name):
+    file_name = file_name + '.pkl'
+    with open(file_name, 'rb') as fp:
+        return pickle.load(fp)

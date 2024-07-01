@@ -1,18 +1,4 @@
-import pickle
-# import xlrd
-import numpy as np
 
-
-def write_file(file_name, file):
-    file_name = file_name + '.pkl'
-    with open(file_name, 'wb') as fp:
-        pickle.dump(file, fp)
-
-
-def read_file(file_name):
-    file_name = file_name + '.pkl'
-    with open(file_name, 'rb') as fp:
-        return pickle.load(fp)
 
 
 # def e2m(path):

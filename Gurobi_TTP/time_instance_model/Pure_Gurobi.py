@@ -1,43 +1,42 @@
 from gurobipy import *
 import numpy as np
+from config import sl_line_3_4
+from general_func import draw, write_file
 
-from func import write_file
-from general_func import draw
 
-
-def main():
+def main(cfg):
     # 区间纯运行时分
-    tr_down_b = [9, 8, 7]
-    tr_up_b = [9, 8, 7]
+    tr_down_b = cfg.down_run_time
+    tr_up_b = cfg.up_run_time
     # 站间距
-    distance = [8.1, 10.2, 9]
+    distance = cfg.distance
     # distance = runningTime
     # 列车i的最早始发时刻
-    te_i = [0, 17, 47]
+    te_i = cfg.start_time
     # 列车i的最晚始发时刻
     tl_i = te_i
     # 罚值
-    M = 10e5
+    M = cfg.punish
 
-    num_I = 3  # 列车数
-    num_U = 4  # 车站数
-    num_B = num_U - 1  # 区间数
+    num_I = cfg.n_trains  # 列车数
+    num_U = cfg.n_stations  # 车站数
+    num_B = cfg.n_blocks  # 区间数
     # num_G = 2   # 列车种类总数
     # num_U_i = 0  # 列车i途经的车站集
     # num_U_i_hat = 0  # 列车i必须停站的车站集
-    num_N = 60   # 规划时间段数（min）
+    num_N = cfg.time_zone   # 规划时间段数（min）
     # num_N = 1440 - 6 * 60   # 规划时间段数（min）
-    z_i = [0, 0, 1]  # 0-下行列车；1-上行列车
+    z_i = cfg.direction  # 0-下行列车；1-上行列车
     # z_i = [0, 0, 0, 1, 1, 1]
     # z_i = [0 for _ in range(13)] + [1 for _ in range(13)]
 
-    h_tli = 4   # 连发间隔
-    h_tb = 2   # 不同时到达间隔
-    h_th = 2   # 会车间隔
-    t_ac = 2   # 启动附加时分
-    t_dc = 3   # 停车附加时分
-    tw_min = 4  # 列车i在车站u的最短停站时间
-    tw_max = 25  # 列车i在车站u的最长停站时间
+    h_tli = cfg.consecutive_headway   # 连发间隔
+    h_tb = cfg.station_headway   # 不同时到达间隔
+    h_th = cfg.block_headway   # 会车间隔
+    t_ac = cfg.time_loss_ac   # 启动附加时分
+    t_dc = cfg.time_loss_de   # 停车附加时分
+    tw_min = cfg.min_dwell_time  # 列车i在车站u的最短停站时间
+    tw_max = cfg.max_dwell_time  # 列车i在车站u的最长停站时间
 
     model = Model()
     # 定义决策变量
@@ -100,7 +99,7 @@ def main():
     obj = LinExpr(0)
     for i in range(num_I):
         if z_i[i] == 0: # 下行列车
-            obj.addTerms(1, ta_i_b[i,num_B-1])
+            obj.addTerms(1, ta_i_b[i,num_B - 1])
             obj.addTerms(-1, td_i_b[i,0])
         else: # 上行列车
             obj.addTerms(-1, ta_i_b[i, num_B - 1])
@@ -281,9 +280,10 @@ def main():
             time_slot.append(row_ta)
         time_slot = np.array(time_slot)
         print('time_slot:\n'+str(time_slot))
-        write_file('time_slot_3_4_gurobi', time_slot)
+        write_file('time_slot_3_4_gurobi_tsm', time_slot)
         draw(distance=distance, num_S=num_U, time_slot=time_slot, time_horizon=num_N)
 
 
 if __name__ == "__main__":
-    main()
+    config = sl_line_3_4()
+    main(config)
