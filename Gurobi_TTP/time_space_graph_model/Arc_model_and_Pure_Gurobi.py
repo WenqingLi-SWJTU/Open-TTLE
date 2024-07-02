@@ -76,6 +76,8 @@ def main(cfg):
     # 遍历并打印所有约束
     # for constr in model.getConstrs():
     #     print(model.getRow(constr))
+    # 打印约束数量
+    print("The total number of constraints: " + str(len(model.getConstrs())))
 
     if model.Status == 2:
         x_opt = np.zeros(n_arcs,)

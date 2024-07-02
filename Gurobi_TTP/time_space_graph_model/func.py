@@ -436,21 +436,36 @@ def generate_incompatible_sets(cfg, point_set, arc_sets_of_trains, point_arc_map
     return incompatible_sets
 
 
-def decode_solution_to_timeslot(solution, arc_point_mapping, point_set, arc_set):
-    time_slot = []
-    # 从solution中获取值为1的边索引
-    selected_arcs_index = {0: np.where(solution == 1)[0]}
-
-    #
-    draw_graph(point_set, selected_arcs_index, point_arc_mapping, arc_point_mapping, config)
-    # return time_slot
+# def decode_solution_to_timeslot(solution, arc_point_mapping, point_set, arc_sets_of_trains, arc_set, config):
+#     n_trains = config.n_trains
+#     n_blocks = config.n_blocks
+#     time_slot = np.zeros((2*n_blocks, n_trains))
+#     # 从solution中获取值为1的边索引: 运行边
+#     selected_arcs_indexes = np.where(solution == 1)[0]
+#     for selected_arcs_index in selected_arcs_indexes:
+#         # 获取边相关的列车和区间编号
+#         for key, values in arc_sets_of_trains.items():
+#             if selected_arcs_index in values:
+#                 train_id = key
+#                 arc_set_of_train = arc_sets_of_trains[key]
+#         block_id = arc_set[selected_arcs_index][-1]
+#         # 通过运行边获取连接节点的索引
+#         linked_points_index = arc_point_mapping[selected_arcs_index]
+#         point_1 = point_set[linked_points_index[0]]
+#         point_2 = point_set[linked_points_index[1]]
+#         # 获取两个连接节点的时刻
+#         time_1, time_2 = point_1[1], point_2[1]
+#         # 根据区间编号和列车编号更新
+#         time_slot[2*block_id, train_id] = point_1
+#         time_slot[2*block_id, train_id] = point_2
+#     return time_slot
 
 
 # test code
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # config = test_case()
-    config = dl_line_3_4()
-    point_set, arc_sets_of_trains, arc_sets, point_arc_mapping, arc_point_mapping = \
-        generate_graph(config)
-    draw_graph(point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping, config)
+    # config = dl_line_3_4()
+    # point_set, arc_sets_of_trains, arc_sets, point_arc_mapping, arc_point_mapping = \
+    #     generate_graph(config)
+    # draw_graph(point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping, config)
     # incompatible_sets = generate_incompatible_sets(config, point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping)
