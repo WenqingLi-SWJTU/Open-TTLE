@@ -69,7 +69,6 @@ def draw(time_slot, config):
 
 
 import pickle
-# import xlrd
 import numpy as np
 
 
