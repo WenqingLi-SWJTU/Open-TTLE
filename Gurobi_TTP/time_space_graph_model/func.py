@@ -23,6 +23,7 @@ def random_color():
     return random.choice(list(colors))
 
 
+"""------used in arc model-----------"""
 def divide_out_int_arcs(point_index, point_arc_mapping, arc_point_mapping):
     out_arcs, in_arcs = [], []
     linked_arc_indexes = point_arc_mapping[point_index]
@@ -50,7 +51,6 @@ def decode_graph_to_timeslot(point_set, arc_set, selected_arc_sets_of_trains, ar
                 time_slot[2 * linked_block_index, i] = time_instance_0
                 time_slot[2 * linked_block_index + 1, i] = time_instance_1
     return time_slot
-
 
 
 # 检查两个列车的边集中任意一对边是否满足约束条件，如果违背了任意约束，则将该对边的编号加入不兼容集中。
@@ -461,11 +461,43 @@ def generate_incompatible_sets(cfg, point_set, arc_sets_of_trains, point_arc_map
 #     return time_slot
 
 
+"""------used in node model-----------"""
+
+
+# 根据列车边集和节点集生成列车节点集
+def generate_point_sets_of_trains(point_set, arc_sets_of_trains, arc_point_mapping):
+    n_trains = len(arc_sets_of_trains)
+    point_sets_of_trains = {}
+    point_indices_of_trains = {}
+    for i in range(n_trains):
+        arc_sets_of_train_i = arc_sets_of_trains[i]  # 列车i的边集
+        # 根据列车i的边集生成列车i的边编号集
+        arc_indices_of_train_i = [arc_of_train_i[0] for arc_of_train_i in arc_sets_of_train_i]
+        # 根据列车i的边编号和边-节点映射生成列车i的节点编号集
+        point_indices_duplicate = (np.array(arc_point_mapping)[arc_indices_of_train_i]).flatten()
+        point_indices = np.unique(point_indices_duplicate)
+        # 去除虚拟始发节点和终到节点编号
+        point_indices = point_indices[point_indices != 0]
+        point_indices = point_indices[point_indices != -1]
+        # 根据节点集和列车i的节点编号集生成列车i的节点集
+        point_indices_of_trains[i] = point_indices
+        point_sets_of_trains[i] = point_set[point_indices]
+    return point_sets_of_trains, point_indices_of_trains
+
+
+# 根据参数和点集生成不兼容集
+def generate_incompatible_sets_of_points(cfg, point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping):
+    incompatible_sets = []
+    return incompatible_sets
+
+
 # test code
-# if __name__ == '__main__':
-    # config = test_case()
+if __name__ == '__main__':
+    config = test_case()
     # config = dl_line_3_4()
-    # point_set, arc_sets_of_trains, arc_sets, point_arc_mapping, arc_point_mapping = \
-    #     generate_graph(config)
+    point_set, arc_sets_of_trains, arc_sets, point_arc_mapping, arc_point_mapping = \
+        generate_graph(config)
+    point_sets_of_trains, point_indices_of_trains =\
+        generate_point_sets_of_trains(point_set, arc_sets_of_trains, arc_point_mapping)
     # draw_graph(point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping, config)
     # incompatible_sets = generate_incompatible_sets(config, point_set, arc_sets_of_trains, point_arc_mapping, arc_point_mapping)
